@@ -312,7 +312,7 @@ func setGroups(ctx context.Context, d *schema.ResourceData, c *okta.Client) erro
 	// because it's impossible to remove user from build-in or app group via API
 	for _, group := range groups {
 		if group.Type != "BUILT_IN" && group.Type != "APP_GROUP" {
-			groupIDs = append(groupIDs, group.Id)
+			groupIds = append(groupIds, group.Id)
 		}
 	}
 	return setNonPrimitives(d, map[string]interface{}{
@@ -388,7 +388,8 @@ func updateGroupsOnUser(ctx context.Context, u string, g []string, c *okta.Clien
 	}
 	for _, group := range groups {
 		if group.Type != "BUILT_IN" && group.Type != "APP_GROUP" {
-			_, err = c.Group.RemoveUserFromGroup(ctx, group.Id, u)
+			_, err := c.Group.RemoveGroupUser(group.Id, u)
+
 			if err != nil {
 				return fmt.Errorf("failed to remove user from group: %v", err)
 			}
